@@ -1,12 +1,8 @@
-## 0、前置资料
+## 0、前言
+
+- 笔者从现在开始准备开始更新部分java开发相关框架的源码分析学习，就先从myabtis开始吧。文章内容基于源码和官方文档。
 
 - mybatis中文官方文档：https://mybatis.org/mybatis-3/zh/
-
-
-
-
-
-
 
 ## 1、从一个简单的例子开始
 
@@ -149,19 +145,86 @@ public class MapperProxy<T> implements InvocationHandler, Serializable {
 
 可以看到，mybatis创建mapper对象的是通过MapperProxy这个对象实现的，MapperProxy是究竟是什么呢？往下看MapperProxy实现了InvocationHandler这个接口。懂了吧？本质就是动态代理！通过动态代理获得程序运行时传入的class，再创建对象的Mapper对象返回。
 
+接下来生成的Mapper对象之后，调用接口里面的方法，就得执行对应的sql方法了。
 
+## 2、mybatis的XML配置文件
 
+#### 2.1、属性
 
+还是从官方的文档入手，首先从属性为例子开始把。
 
+下列代码是文档中为我们提供的一个设置某个属性的方法：导入`config.properties`文件后，既可以直接使用文件中已经命名好的属性值，也可以直接对value标签后写死属性值，各有各的优点。
 
+```xml
+<properties resource="org/mybatis/example/config.properties">
+  <property name="username" value="dev_user"/>
+  <property name="password" value="F2Fa3!33TYyg"/>
+</properties>
 
+<dataSource type="POOLED">
+  <property name="driver" value="${driver}"/>
+  <property name="url" value="${url}"/>
+  <property name="username" value="${username}"/>
+  <property name="password" value="${password}"/>
+</dataSource>
+```
 
+当然，你也可以使用java代码在程序运行时写入配置。
 
+```java
+SqlSessionFactory factory = new SqlSessionFactoryBuilder().build(reader, props);
+// ... 或者 ...
+SqlSessionFactory factory = new SqlSessionFactoryBuilder().build(reader, environment, props);
+```
 
+从SqlSessionFactoryBuilder这个类中我们可以看到许多build的重载方法，不过核心就只有两个，就是接受Reader和接受InputStream两种build方法。
 
+- Reader：用于字符流读取的公共父类
+- InputStream：用于字节输入流的公共父类
 
+```java
+public SqlSessionFactory build(Reader reader) {
+    return build(reader, null, null);
+}
 
+public SqlSessionFactory build(Reader reader, String environment) {
+    return build(reader, environment, null);
+}
 
+public SqlSessionFactory build(Reader reader, Properties properties) {
+    return build(reader, null, properties);
+}
+
+public SqlSessionFactory build(Reader reader, String environment, Properties properties) {
+}
+
+public SqlSessionFactory build(InputStream inputStream) {
+    return build(inputStream, null, null);
+}
+
+public SqlSessionFactory build(InputStream inputStream, String environment) {
+    return build(inputStream, environment, null);
+}
+
+public SqlSessionFactory build(InputStream inputStream, Properties properties) {
+    return build(inputStream, null, properties);
+}
+
+public SqlSessionFactory build(InputStream inputStream, String environment, Properties properties) {
+}
+```
+
+而按照官方文档的说法，以上三种属性加载的优先级为：
+
+- 首先读取在 properties 元素体内指定的属性。
+- 然后根据 properties 元素中的 resource 属性读取类路径下属性文件，或根据url 属性指定的路径读取属性文件，并覆盖之前读取过的同名属性。
+- 最后读取作为方法参数传递的属性，并覆盖之前读取过的同名属性。
+
+以上我们讲解了属性的配置，至于设置、类别别名我们便跳过。
+
+#### 2.2、类型处理器
+
+先了解一下resultMap
 
 
 
