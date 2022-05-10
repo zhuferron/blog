@@ -1,4 +1,4 @@
-## 1、JavaWeb复习
+# 1、JavaWeb复习
 
 #### 1.1、三大组件：Servlet、Filter、Listener
 
@@ -48,3 +48,15 @@ JSON(javascript object notation)：一种轻量级(和xml相比)的数据交换�
 #### 1.5、AJAX
 
 AJAX：**A**synchronous **J**avascript **A**nd **X**ML，是一种无刷新的就可以得到服务器数据的技术。
+
+# 2、Spring
+
+spring是一个ioc和aop的容器框架
+
+#### 2.1、IOC
+
+IOC：inversion of control 控制反转
+
+**控制：资源的获取方式，原来获取对象是主动式获取，由程序员自己创建。现在变成被动式获取，资源的获取由容器来创建。**
+
+DI：dependency injection，容器能知道哪个类运行的时候，需要另外一个类。容器通过反射的方式，将容器中准备好的BookService对象注入到bookservlet
