@@ -80,6 +80,8 @@ description: Spring第二部分学习笔记，主要介绍了Spirng的自动装�
 
 使用Autowired我们可以不用编写set方法了，前提是你这个自动装配的属性在IOC(Spring)容器中存在，且符合ByName
 
+**@Autowired默认是按bytype实现，结合@Qualifier(value=)可以实现一起使用**
+
 ```
 使用@Nullable可以使name为空时不报错
 ```
